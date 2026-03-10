@@ -1,35 +1,15 @@
 <!doctype html>
 <html lang="es">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Asistente de vestimenta climática</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <main class="app-shell">
-      <section class="card">
-        <h1>Asistente de clima</h1>
-        <p class="lead">
-          Ingresa el nombre de una ciudad y obtén una recomendación de
-          vestimenta basada en el clima actual.
-        </p>
-        <form id="weather-form" autocomplete="off">
-          <label for="city">Ciudad</label>
-          <div class="input-row">
-            <input
-              id="city"
-              name="city"
-              type="text"
-              placeholder="Ej. Bogotá, CDMX, Madrid"
-              required
-            />
-            <button type="submit">Consultar</button>
-          </div>
-        </form>
-        <div id="result" class="result" aria-live="polite"></div>
-      </section>
-    </main>
-    <script src="script.js" type="module"></script>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
