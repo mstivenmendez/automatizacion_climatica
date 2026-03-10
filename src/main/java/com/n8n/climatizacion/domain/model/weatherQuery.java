@@ -76,6 +76,20 @@ public class weatherQuery {
   }
 
   /**
+   * Reconstruye la entidad con todos los datos provenientes de una capa de
+   * persistencia o de un DTO completo.
+   */
+  public void reconstruct(Long id, String city, String country, BigDecimal temperature,
+      String weatherCondition, String recommendedClothes) {
+    this.id = id;
+    this.city = city;
+    this.country = country;
+    this.temperature = temperature;
+    this.weatherCondition = weatherCondition;
+    this.recommendedClothes = recommendedClothes;
+  }
+
+  /**
    * Permite actualizar la informacion meteorologica y la recomendacion asociada
    * cuando llega una nueva lectura.
    */
@@ -99,18 +113,12 @@ public class weatherQuery {
     return city.equalsIgnoreCase(this.city) && country.equalsIgnoreCase(this.country);
   }
 
-  /**
-   * Reglas simples de negocio para detectar si se necesita ropa abrigada.
-   */
-  public boolean requiresColdWeatherOutfit() {
-    return temperature != null && temperature.compareTo(BigDecimal.valueOf(18)) < 0;
+  public boolean matchesCity(String city) {
+    return city != null && this.city != null && this.city.equalsIgnoreCase(city);
   }
 
-  public boolean shouldCarryUmbrella() {
-    if (weatherCondition == null) {
-      return false;
-    }
-    String normalized = weatherCondition.toLowerCase();
-    return normalized.contains("rain") || normalized.contains("lluvia");
+  public boolean matchesCountry(String country) {
+    return country != null && this.country != null && this.country.equalsIgnoreCase(country);
   }
+
 }
