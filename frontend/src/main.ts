@@ -8,7 +8,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 
   <div class="app-wrapper">
 
-    <p class="app-title">El Tiempo</p>
+    <p class="app-title">Weather App</p>
 
     <!-- Buscador -->
     <div class="search-card">
