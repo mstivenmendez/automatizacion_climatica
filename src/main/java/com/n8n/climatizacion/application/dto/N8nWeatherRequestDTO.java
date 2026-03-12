@@ -1,0 +1,12 @@
+package com.n8n.climatizacion.application.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class N8nWeatherRequestDTO {
+  private String city;
+}

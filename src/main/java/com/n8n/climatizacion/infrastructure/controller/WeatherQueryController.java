@@ -1,10 +1,13 @@
 package com.n8n.climatizacion.infrastructure.controller;
 
+import com.n8n.climatizacion.application.dto.N8nWeatherRequestDTO;
+import com.n8n.climatizacion.application.dto.N8nWeatherResponseDTO;
 import com.n8n.climatizacion.application.dto.WeatherQueryRegistrationRequestDTO;
 import com.n8n.climatizacion.application.dto.WeatherQueryRequestDTO;
 import com.n8n.climatizacion.application.dto.WeatherQueryResponseDTO;
 import com.n8n.climatizacion.application.service.WeatherQueryService;
 import com.n8n.climatizacion.domain.model.weatherQuery;
+import com.n8n.climatizacion.infrastructure.adapter.N8nWebhookClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,9 +34,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class WeatherQueryController {
 
   private final WeatherQueryService service;
+  private final N8nWebhookClient n8nClient;
 
-  public WeatherQueryController(WeatherQueryService service) {
+  public WeatherQueryController(WeatherQueryService service, N8nWebhookClient n8nClient) {
     this.service = service;
+    this.n8nClient = n8nClient;
+  }
+
+  @GetMapping("/weather-advice")
+  @Operation(summary = "Consultar clima vía n8n", description = "Recibe una ciudad, llama al webhook de n8n para obtener datos climáticos y recomendación de IA, y retorna la respuesta al frontend")
+  public List<N8nWeatherResponseDTO> getWeatherAdvice(@RequestParam String city) {
+    return n8nClient.callWeatherAdvice(city);
   }
 
   @PostMapping
