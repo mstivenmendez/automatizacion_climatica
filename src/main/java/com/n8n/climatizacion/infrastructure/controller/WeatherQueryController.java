@@ -41,12 +41,10 @@ public class WeatherQueryController {
     this.n8nClient = n8nClient;
   }
 
-  @PostMapping("/weather-advice")
+  @GetMapping("/weather-advice")
   @Operation(summary = "Consultar clima vía n8n", description = "Recibe una ciudad, llama al webhook de n8n para obtener datos climáticos y recomendación de IA, y retorna la respuesta al frontend")
-  public ResponseEntity<N8nWeatherResponseDTO> getWeatherAdvice(
-      @RequestBody N8nWeatherRequestDTO request) {
-    N8nWeatherResponseDTO response = n8nClient.callWeatherAdvice(request.getCity());
-    return ResponseEntity.ok(response);
+  public List<N8nWeatherResponseDTO> getWeatherAdvice(@RequestParam String city) {
+    return n8nClient.callWeatherAdvice(city);
   }
 
   @PostMapping

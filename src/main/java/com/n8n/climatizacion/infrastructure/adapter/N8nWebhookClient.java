@@ -1,13 +1,14 @@
 package com.n8n.climatizacion.infrastructure.adapter;
 
-import com.n8n.climatizacion.application.dto.N8nWeatherRequestDTO;
 import com.n8n.climatizacion.application.dto.N8nWeatherResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class N8nWebhookClient {
@@ -22,13 +23,16 @@ public class N8nWebhookClient {
     this.webhookUrl = webhookUrl;
   }
 
-  public N8nWeatherResponseDTO callWeatherAdvice(String city) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
+  public List<N8nWeatherResponseDTO> callWeatherAdvice(String city) {
+    URI uri = UriComponentsBuilder.fromUriString(webhookUrl)
+        .queryParam("city", city)
+        .build()
+        .encode()
+        .toUri();
 
-    N8nWeatherRequestDTO body = new N8nWeatherRequestDTO(city);
-    HttpEntity<N8nWeatherRequestDTO> request = new HttpEntity<>(body, headers);
+    N8nWeatherResponseDTO[] response =
+        restTemplate.getForObject(uri, N8nWeatherResponseDTO[].class);
 
-    return restTemplate.postForObject(webhookUrl, request, N8nWeatherResponseDTO.class);
+    return response == null ? List.of() : Arrays.asList(response);
   }
 }

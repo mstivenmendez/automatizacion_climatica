@@ -1,31 +1,33 @@
 package com.n8n.climatizacion.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class N8nWeatherResponseDTO {
 
+  @JsonProperty("id")
+  private Long id;
+
+  @JsonProperty("city")
   private String city;
+
+  @JsonProperty("country")
   private String country;
-  private double temperature;
 
-  @JsonProperty("feels_like")
-  private double feelsLike;
+  @JsonProperty("temperature")
+  private String temperature;
 
-  private int humidity;
-  private String description;
-  private String icon;
+  @JsonProperty("weather_condition")
+  private String weatherCondition;
 
-  @JsonProperty("wind_speed")
-  private double windSpeed;
+  @JsonProperty("recommended_clothes")
+  private String recommendedClothes;
 
-  private List<String> alerts;
-  private String recommendation;
-
-  @JsonProperty("queried_at")
-  private String queriedAt;
+  @JsonProperty("created_at")
+  private String createdAt;
 }
