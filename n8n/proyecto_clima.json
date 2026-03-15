@@ -1,0 +1,354 @@
+{
+  "name": "proyecto_clima",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/geo/1.0/direct",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "=q",
+              "value": "={{ $json.query.city }}"
+            },
+            {
+              "name": "appid",
+              "value": "325e18d1c3d457a03ecc0741fdbcdb54"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -480,
+        -128
+      ],
+      "id": "2b89a31a-3562-4dee-abbb-d05406f94cb8",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const city = $('Webhook').first().json.body.city ?? $input.first().json.name;\nconst country = $json.sys?.country ?? $json.country ?? null;\n\nconst temp = $json.main.temp;\nconst feelsLike = $json.main.feels_like;\nconst condition = $json.weather[0].main;\nconst description = $json.weather[0].description;\nconst humidity = $json.main.humidity;\nconst windSpeed = $json.wind.speed;\n\nlet recommendation = '';\n\nif (\n  condition === 'Rain' ||\n  condition === 'Drizzle' ||\n  condition === 'Thunderstorm'\n) {\n  recommendation = 'Usa chaqueta impermeable y lleva paraguas.';\n} else if (\n  condition === 'Haze' ||\n  condition === 'Mist' ||\n  condition === 'Fog'\n) {\n  recommendation = 'Usa chaqueta ligera; hay poca visibilidad por niebla o bruma.';\n} else if (feelsLike <= 10) {\n  recommendation = 'Usa abrigo.';\n} else if (feelsLike <= 18) {\n  recommendation = 'Usa chaqueta ligera o suéter.';\n} else {\n  recommendation = 'Usa ropa fresca.';\n}\n\nreturn [\n  {\n    json: {\n      city,\n      country,\n      temp,\n      feelsLike,\n      condition,\n      description,\n      humidity,\n      windSpeed,\n      recommendation\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        -128
+      ],
+      "id": "c2691396-c589-49e6-82fe-973906745f15",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "=lat",
+              "value": "={{$json.lat}}"
+            },
+            {
+              "name": "lon",
+              "value": "={{ $json.lon }}"
+            },
+            {
+              "name": "appid",
+              "value": "325e18d1c3d457a03ecc0741fdbcdb54"
+            },
+            {
+              "name": "units",
+              "value": "metric"
+            },
+            {
+              "name": "lang",
+              "value": "es"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -256,
+        -128
+      ],
+      "id": "79e8446b-90b3-48a1-b756-2e7dd0a7465e",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        736,
+        -112
+      ],
+      "id": "14c998df-1702-4289-8280-fa6418ad2ffa",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "path": "9f86d89c-1508-4fd5-97eb-c061ab83b33e",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -704,
+        -128
+      ],
+      "id": "0e51ad9e-a323-43d9-8253-414d81f44876",
+      "name": "Webhook",
+      "webhookId": "9f86d89c-1508-4fd5-97eb-c061ab83b33e"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "weather_queries",
+          "mode": "list",
+          "cachedResultName": "weather_queries"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "temperature": "={{ $('Code in JavaScript').item.json.temp }}",
+            "country": "={{ $('Code in JavaScript').item.json.country }}",
+            "weather_condition": "={{ $('Code in JavaScript').item.json.condition }}",
+            "recommended_clothes": "={{ $json.output }}",
+            "city": "={{ $('Code in JavaScript').item.json.city }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "city",
+              "displayName": "city",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "country",
+              "displayName": "country",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "temperature",
+              "displayName": "temperature",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "weather_condition",
+              "displayName": "weather_condition",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "recommended_clothes",
+              "displayName": "recommended_clothes",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        528,
+        -128
+      ],
+      "id": "f3d0a511-5e5c-43af-8510-c0d6fab74357",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "0qmqh47dcnQEWOLY",
+          "name": "proyecto_clima"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Eres un asistente de clima y vestimenta.\n\nTu tarea es generar un mensaje corto, amable y claro para el usuario usando estos datos:\n\n- recommended_clothes: {{ $json.recommendation }}\n- temperature: {{ $json.temp }}\n- weather_condition: {{ $json.condition }}\n\nReglas:\n- Escribe máximo 2 oraciones.\n- El mensaje debe sonar natural y útil.\n- Ten en cuenta la temperatura, la condición climática.\n- Refuerza la recomendación de ropa sin copiarla de forma mecánica.\n- No agregues saludos largos ni despedidas.\n- No uses listas.\n- No inventes información adicional.\n- Responde solo con el texto final.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        176,
+        -128
+      ],
+      "id": "f4bcaf64-aea3-417d-a8c9-e2c0a94b2d7b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        112,
+        112
+      ],
+      "id": "a273c22d-1022-4254-ade3-77370a02c2cf",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "PlJYJMX2qchCVBIN",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "9cbc6e66-6b8b-4792-9009-2cb56acce9b6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ec427471855d48cd2661655d05f820ddca1a5b669709311ea020b937a49c42d4"
+  },
+  "id": "ewo7GBwOjRYsXXT5",
+  "tags": []
+}

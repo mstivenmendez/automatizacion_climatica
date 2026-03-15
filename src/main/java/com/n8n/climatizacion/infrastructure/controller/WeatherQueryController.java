@@ -1,6 +1,5 @@
 package com.n8n.climatizacion.infrastructure.controller;
 
-import com.n8n.climatizacion.application.dto.N8nWeatherRequestDTO;
 import com.n8n.climatizacion.application.dto.N8nWeatherResponseDTO;
 import com.n8n.climatizacion.application.dto.WeatherQueryRegistrationRequestDTO;
 import com.n8n.climatizacion.application.dto.WeatherQueryRequestDTO;

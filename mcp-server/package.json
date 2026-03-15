@@ -1,0 +1,19 @@
+{
+  "name": "climatizacion-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server para el asistente climático — expone tools para consultar clima y guardar consultas",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
